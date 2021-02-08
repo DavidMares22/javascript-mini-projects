@@ -45,6 +45,17 @@ const ItemCtrl = (function () {
 
       return newItem;
     },
+
+    getTotalCalories: function () {
+      let total = 0;
+      data.items.forEach(function (item) {
+        total += item.calories;
+      });
+
+      data.totalCalories = total;
+
+      return data.totalCalories;
+    },
     logData: function () {
       return data;
     },
@@ -58,6 +69,7 @@ const UICtrl = (function () {
     addBtn: ".add-btn",
     itemNameInput: "#item-name",
     itemCaloriesInput: "#item-calories",
+    totalCalories: ".total-calories",
   };
 
   // Public methods
@@ -104,12 +116,16 @@ const UICtrl = (function () {
         .querySelector(UISelectors.itemList)
         .insertAdjacentElement("beforeend", li);
     },
+
+    showTotalCalories: function (total) {
+      document.querySelector(UISelectors.totalCalories).textContent = total;
+    },
     clearInput: function () {
       document.querySelector(UISelectors.itemNameInput).value = "";
       document.querySelector(UISelectors.itemCaloriesInput).value = "";
     },
-    hideList: function(){
-      document.querySelector(UISelectors.itemList).style.display = 'none';
+    hideList: function () {
+      document.querySelector(UISelectors.itemList).style.display = "none";
     },
     getSelectors: function () {
       return UISelectors;
@@ -141,6 +157,12 @@ const App = (function (ItemCtrl, UICtrl) {
       // Add item to UI list
       UICtrl.addListItem(newItem);
 
+      // Get total calories
+      const totalCalories = ItemCtrl.getTotalCalories();
+
+      // Add total calories to UI
+      UICtrl.showTotalCalories(totalCalories);
+
       // Clear fields
       UICtrl.clearInput();
     }
@@ -161,6 +183,12 @@ const App = (function (ItemCtrl, UICtrl) {
         // Populate list with items
         UICtrl.populateItemList(items);
       }
+
+      // Get total calories
+      const totalCalories = ItemCtrl.getTotalCalories();
+
+      // Add total calories to UI
+      UICtrl.showTotalCalories(totalCalories);
 
       // Load event listeners
       loadEventListeners();
