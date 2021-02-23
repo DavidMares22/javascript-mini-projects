@@ -20,6 +20,31 @@ const StorageCtrl = (function () {
       }
     },
 
+    updateItemStorage: function (updatedItem) {
+      let items = JSON.parse(localStorage.getItem("items"));
+      items.forEach(function (item, index) {
+        if (item.id === updatedItem.id) {
+          items.splice(index, 1, updatedItem);
+        }
+      });
+
+      localStorage.setItem("items", JSON.stringify(items));
+    },
+    deleteItemFromStorage: function (id) {
+      let items = JSON.parse(localStorage.getItem("items"));
+      items.forEach(function (item, index) {
+        if (item.id === id) {
+          items.splice(index, 1);
+        }
+      });
+
+      localStorage.setItem("items", JSON.stringify(items));
+    },
+    clearItemsFromStorage: function () {
+      
+      localStorage.removeItem("items");
+    },
+
     getItemsFromStorage: function () {
       let items;
       if (localStorage.getItem("items") === null) {
@@ -44,13 +69,13 @@ const ItemCtrl = (function () {
   // Data Structure / State
   const data = {
     // items: [
-      // { id: 0, name: "Steak Dinner", calories: 1200 },
-      // { id: 1, name: "Cookie", calories: 400 },
-      // { id: 2, name: "Eggs", calories: 300 },
+    // { id: 0, name: "Steak Dinner", calories: 1200 },
+    // { id: 1, name: "Cookie", calories: 400 },
+    // { id: 2, name: "Eggs", calories: 300 },
     // ],
     currentItem: null,
     totalCalories: 0,
-    items: StorageCtrl.getItemsFromStorage()
+    items: StorageCtrl.getItemsFromStorage(),
   };
 
   // Public methods
@@ -328,6 +353,9 @@ const App = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
     UICtrl.removeItems();
 
+    // Clear all items from storage
+    StorageCtrl.clearItemsFromStorage();
+
     UICtrl.clearEditState();
 
     UICtrl.hideList();
@@ -347,6 +375,9 @@ const App = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
     // Add total calories to UI
     UICtrl.showTotalCalories(totalCalories);
+
+    // Delete from LS
+    StorageCtrl.deleteItemFromStorage(currentItem.id);
 
     UICtrl.clearEditState();
 
@@ -426,6 +457,9 @@ const App = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
     // Add total calories to UI
     UICtrl.showTotalCalories(totalCalories);
+
+    // Update local storage
+    StorageCtrl.updateItemStorage(updatedItem);
 
     UICtrl.clearEditState();
 
